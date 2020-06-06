@@ -1,0 +1,91 @@
+#include <Servo.h>
+
+#define servo_pin 7
+int low_intensity = 100; 
+int angle = 90;
+int speed = 50;
+float LDR1, LDR2;
+int temperature = 0;
+Servo Servo1;
+
+void setup()
+{
+  Serial.begin(9600);
+  Servo1.attach(servo_pin);
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(A2, INPUT);
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  Servo1.write(angle);
+  delay(5000);
+}
+
+void loop()
+{
+  LDR1 = analogRead(A0);
+  Serial.print("LDR1= ");
+  Serial.println(LDR1);
+
+  LDR2 = analogRead(A1);
+  Serial.print("LDR2= ");
+  Serial.println(LDR2);
+  
+ if(LDR1 > low_intensity && LDR2 >= low_intensity)
+  {
+    delay(100);
+    Serial.println("centered");
+  }
+  else if(LDR1 >= low_intensity)
+  {
+    if(LDR2 < low_intensity)
+    {
+      angle++;
+      Servo1.write(angle);
+      Serial.println("angle++");
+      delay(speed);
+    }
+    
+    //Deksiostrofi kinish tou servo
+  }
+  else if(LDR2 >= low_intensity)
+  {
+    if(LDR1 < low_intensity)
+    {
+      angle--;
+      Servo1.write(angle);
+      Serial.println("angle--");
+      delay(speed);
+    
+    }
+  }
+  else
+  {
+    delay(100);
+  }
+  
+   temperature = -40 + 0.488155 * (analogRead(A2) - 20);
+  if (temperature < 50) {
+    digitalWrite(2, HIGH);
+  } else {
+    digitalWrite(2, LOW);
+  }
+  if (temperature >= 50 && temperature < 70) {
+    digitalWrite(3, HIGH);
+  } else {
+    digitalWrite(3, LOW);
+  }
+  if (temperature >= 70) {
+    digitalWrite(4, HIGH);
+  } else {
+    digitalWrite(4, LOW);
+  }
+  delay(50);
+
+  
+  
+}
+
+
+                
